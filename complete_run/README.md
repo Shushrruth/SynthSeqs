@@ -32,6 +32,7 @@ If you run `mkvirtualenv` and get a "command not found" error, try this:
 ```
 ~$ which virtualenvwrapper.sh
 ~/.local/bin/virtualenvwrapper.sh
+
 ~$ source `which virtualenvwrapper.sh`
 ```
 
