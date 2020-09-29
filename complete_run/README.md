@@ -25,6 +25,16 @@ On the Altius server, run:
 ```
 to install `virtualenvwrapper` and all of its dependencies locally without needing sudo privileges.  `virtualenvwrapper` will be installed in `/home/{USER}/.local/bin`.
 
+#### Source the `virtualenvwrapper.sh` script
+
+If you run `mkvirtualenv` and get a "command not found" error, try this:
+
+```
+~$ which virtualenvwrapper.sh
+~/.local/bin/virtualenvwrapper.sh
+~$ source `which virtualenvwrapper.sh`
+```
+
 #### Create a new python3.6 `synth-seqs` virtualenv
 
 Now we need to create a fresh virtual environment dedicated to synthetic sequences development.  This virtual environment will hold all of the dependencies needed to run the various components of the project.  We can create this virtualenv using the command `mkvirtualenv`.  Make sure to specify which python you would like to use for your virtualenv with the `-p` flag - I've been using the python3.6 in the `python/3.6.4` module.
