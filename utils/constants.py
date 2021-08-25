@@ -105,4 +105,30 @@ PATH_TO_REFERENCE_GENOME = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/GRCh3
 
 PATH_TO_DHS_MASTERLIST = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/master_list_stats_WM20180608.txt'
 
+<<<<<<< HEAD
 PATH_TO_NMF_LOADINGS = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/2018-06-08NC16_NNDSVD_Mixture.csv'
+=======
+PATH_TO_NMF_LOADINGS = \
+    "/home/amuratov/fun/60918/60518_NNDSVD_NC16/" \
+    "2018-06-08NC16_NNDSVD_Mixture.csv"
+
+# THESE ARE IN NON CANONICAL ORDER
+DHS_COLORS = np.array([
+    [195,195,195],
+    [187,45,212],
+    [5,193,217],
+    [122,0,255],
+    [254,129,2],
+    [74,104,118],
+    [255,229,0],
+    [4,103,253],
+    [7,175,0],
+    [105,33,8],
+    [185,70,29],
+    [76,125,20],
+    [0,149,136],
+    [65,70,19],
+    [255,0,0],
+    [8,36,91],
+]) / 255
+>>>>>>> a9987749793f42ac0cc97343929db4abff5cca61

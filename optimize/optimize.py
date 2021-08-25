@@ -34,12 +34,17 @@ class SequenceTuner:
         self.classifier.zero_grad()
         self.optimizer.zero_grad()
 
+    @staticmethod
+    def _tag(seq_id, component, iteration, seed_num):
+        return f"{seed_num}_comp{component}_{iteration}_{seq_id}"
+
     def tune(
         self,
         opt_zs,
         target_component,
         num_iterations,
         save_interval,
+        random_seed,
         save_dir,
     ):
         # Convert the target component to a 0-based index for tuning
@@ -75,27 +80,58 @@ class SequenceTuner:
 
             # TODO: Add logic for stopping criteria
             if i % save_interval == 0:
+                tags = [
+                    self._tag(seq_id, target_component, i, random_seed)
+                    for seq_id in range(len(seqs))
+                ]
                 raw_seqs = [
-                    SeqRecord(one_hot_to_seq(x), id=str(j))
+                    SeqRecord(one_hot_to_seq(x), id=tags[j])
                     for j, x in enumerate(seqs)
                 ]
                 self.save_sequences(raw_seqs, i, save_dir)
-
+                self.save_input_seeds(opt_z_norm, i, save_dir)
                 self.save_performance_metrics(
                     pred,
-                    seq,
+                    seqs,
                     opt_z_norm,
-                    save_dir,
+                    tags,
                     i,
+                    save_dir,
                 )
 
-    def save_sequences(self, seq_records, iteration, save_dir):
-        file = save_dir + "sequences/" + f'iteration_{iteration}.fasta'
+    # @staticmethod
+    # def snapshot(input_seeds, random_seed, )
+
+    @staticmethod
+    def save_input_seeds(seeds, iteration, save_dir):
+        input_seeds = seeds.cpu().detach().numpy().squeeze()
+        file = save_dir + "input_seeds/" + f"iteration{iteration}.fasta"
+        np.save(file, input_seeds)
+
+    @staticmethod
+    def save_sequences(seq_records, iteration, save_dir, stop=False):
+        if stop:
+            file = save_dir + "sequences/" + f'iteration{iteration}_stop.fasta'
+        else:
+            file = save_dir + "sequences/" + f'iteration{iteration}.fasta'
+
         with open(file, 'w') as f:
             SeqIO.write(seq_records, f, 'fasta')
 
-    def _performance_df_columns(self):
-        columns = ["seq_id"]
+    @staticmethod
+    def calculate_skew(seq):
+        seq_int_repr = seq.argmax(axis=1)
+        nts, counts = np.unique(seq_int_repr, return_counts=True)
+        # TODO: Need to handle the case of e.g. no Ts in a seq (-1 placeholder for now)
+        if len(counts) < 4:
+            return -1
+        at_skew = np.abs(np.log2(counts[0] / counts[3]))
+        cg_skew = np.abs(np.log2(counts[1] / counts[2]))
+        return (at_skew + cg_skew) / 2
+
+    @staticmethod
+    def _performance_df_columns():
+        columns = ["tag", "seq_id", "iteration"]
         # Columns for loss value for all components
         for i in range(TOTAL_CLASSES):
             columns.append(f"loss_{i + 1}")
@@ -105,10 +141,10 @@ class SequenceTuner:
         columns.append("skew")
         return columns
 
-    def _performance_metrics_records(self, loss, softmax, seqs):
+    def _performance_metrics_records(self, tags, iteration, loss, softmax, seqs):
         records = []
         for i, seq in enumerate(seqs):
-            record = [i]
+            record = [tags[i], i, iteration]
             # Append loss
             for loss_val in loss[i]:
                 record.append(loss_val)
@@ -116,56 +152,31 @@ class SequenceTuner:
             for softmax_val in softmax[i]:
                 record.append(softmax_val)
 
-            # TODO: Per sequence skew function
-            skew = -1
+            skew = self.calculate_skew(seq)
             record.append(skew)
             records.append(tuple(record))
 
         return records
-
 
     def save_performance_metrics(
         self,
         pred,
         seqs,
         opt_z_norm,
-        save_dir,
+        tags,
         iteration,
+        save_dir,
     ):
         # Convert all items to numpy, cpu
         softmax_operation = nn.Softmax(dim=1)
         softmax_out = softmax_operation(pred).cpu().detach().numpy()
 
-        seqs = seqs.cpu().detach().numpy().squeeze().transpose(0, 2, 1)
         pred = pred.cpu().detach().numpy()
         loss = -1 * pred
-        seeds = opt_z_norm.cpu().detach().numpy().squeeze()
 
         columns = self._performance_df_columns()
-        records = self._performance_metrics_records(loss, softmax_out, seqs)
+        records = self._performance_metrics_records(tags, iteration, loss, softmax_out, seqs)
         dataframe = pd.DataFrame.from_records(records, columns=columns)
 
-        file = save_dir + "performance/" + f'iteration_{iteration}.csv'
+        file = save_dir + "performance/" + f'iteration{iteration}.csv'
         dataframe.to_csv(file, sep=',', index=False)
-
-        # with open(save_dir + f'loss/loss{tag}.txt', 'a') as f:
-        #     f.write(str(loss.item()) + '\n')
-        #
-        # np.save(save_dir + f'softmax/softmax{tag}.npy', softmax_out)
-        #
-        # seed = opt_z_norm.cpu().detach().numpy().squeeze()
-        # np.save(save_dir + f'seed/seed{tag}.npy', seed)
-        #
-        # self.save_skew(seqs, save_dir, tag)
-
-    # def save_skew(self, seqs, save_dir, tag):
-    #     seq_int_repr = seqs.argmax(axis=2)
-    #     skew = self.calculate_skew(seq_int_repr)
-    #     with open(save_dir + f'skew/skew{tag}.txt', 'a') as f:
-    #         f.write(str(skew) + '\n')
-    #
-    # def calculate_skew(self, seq_int_repr):
-    #     nts, counts = np.unique(seq_int_repr, return_counts=True)
-    #     at_skew = np.abs(np.log2(counts[0] / counts[3]))
-    #     cg_skew = np.abs(np.log2(counts[1] / counts[2]))
-    #     return (at_skew + cg_skew) / 2
