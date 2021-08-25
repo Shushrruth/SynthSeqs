@@ -101,14 +101,8 @@ VECTOR_FILE = 'vectors.npy'
 
 # Default source file paths
 
-PATH_TO_REFERENCE_GENOME = \
-    "/net/seq/data/genomes/human/GRCh38/noalts/GRCh38_no_alts.fa"
+PATH_TO_REFERENCE_GENOME = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/GRCh38_no_alts.fa'
 
-PATH_TO_DHS_MASTERLIST = \
-    "/home/meuleman/work/projects/ENCODE3/" \
-    "WM20180608_masterlist_FDR0.01_annotations/" \
-    "master_list_stats_WM20180608.txt"
+PATH_TO_DHS_MASTERLIST = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/master_list_stats_WM20180608.txt'
 
-PATH_TO_NMF_LOADINGS = \
-    "/home/amuratov/fun/60918/60518_NNDSVD_NC16/" \
-    "2018-06-08NC16_NNDSVD_Mixture.csv"
+PATH_TO_NMF_LOADINGS = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/2018-06-08NC16_NNDSVD_Mixture.csv'

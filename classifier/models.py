@@ -94,7 +94,7 @@ class conv_net_one_layer(nn.Module):
         self.filters = filters 
         self.out_length = out_length
 
-    def forward(self, x):
+    def forward_one(self, x):
         h = self.net(x).view(-1, self.out_length * self.filters)
         fc_out = self.fc_net(h)
         softmax = self.softmax(fc_out)
@@ -104,3 +104,9 @@ class conv_net_one_layer(nn.Module):
         h = self.net(x).view(-1, self.out_length * self.filters)
         fc_out = self.fc_net(h)
         return fc_out.squeeze()
+
+    def forward(self,x1,x2):
+        out1 = self.forward_one(x1)
+        out2 = self.forward_one(x2)
+
+        return (out1 + out2)/2
