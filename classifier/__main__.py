@@ -84,6 +84,8 @@ def init_dirs(output_dir):
     if not os.path.exists(output_dir + MODEL_DIR):
         os.makedirs(output_dir + MODEL_DIR)
 
+print('Started')
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output',
