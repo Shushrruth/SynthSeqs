@@ -105,9 +105,9 @@ VECTOR_FILE = 'vectors.npy'
 
 #PATH_TO_DHS_MASTERLIST = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/master_list_stats_WM20180608.txt'
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 #PATH_TO_NMF_LOADINGS = '/home/shushrruth/Desktop/Wouter/SynthSeqs/Data/2018-06-08NC16_NNDSVD_Mixture.csv'
-=======
+#=======
 PATH_TO_NMF_LOADINGS = \
     "/home/amuratov/fun/60918/60518_NNDSVD_NC16/" \
     "2018-06-08NC16_NNDSVD_Mixture.csv"
