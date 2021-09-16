@@ -20,7 +20,7 @@ def classifier_trainer(output_dir):
     dev = device("cuda" if cuda.is_available() else "cpu")
 
     #TODO: This is all temporary
-    EPOCHS = 1000
+    EPOCHS = 300
     BATCH_SIZE = 256
     MODEL = conv_net_one_layer
     DEVICE = dev
