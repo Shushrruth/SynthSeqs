@@ -88,7 +88,7 @@ CLASSIFIER_MODEL_FILE = 'classifier.pth'
 # Output directories
 OUTPUT_DIR = expanduser("~") 
 DATA_DIR = '/synthseqs_data/'
-FIGURE_DIR = '/synthseqs_output/figures/'
+FIGURE_DIR = '/projects/SynthSeqs/figures'
 MODEL_DIR = '/synthseqs_output/models/'
 TUNING_DIR = 'tuning/'
 VECTOR_DIR = 'vectors/'
