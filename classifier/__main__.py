@@ -64,7 +64,7 @@ def train_model(output_dir):
     }
 
     model_params = {
-        'filters': 100, 
+        'filters': 200, 
         'pool_size': 200,
         'fully_connected': 100,
         'drop': 0.5,
